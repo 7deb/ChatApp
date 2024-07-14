@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const databaseConnect = require('./database/db');
 const authRoutes = require('./routes/authRoutes');
@@ -13,6 +14,11 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin:'http://localhost:3000',
+    methods:'GET,PUT,POST,PATCH,DELETE',
+    credentials:true,
+}));
 
 app.use("/api/auth/", authRoutes);
 app.use("/api/messages/", messageRoutes);

@@ -4,56 +4,49 @@ const generateToken = require('../utility/genToken');
 
 const signup = async (req, res) => {
     try {
-        const { fullName, userName, email, password, confirmedPassword, gender } = req.body;
-        if (!fullName || !userName || !email || !password) {
-            return res.status(400).json({ error: "all fields are nescessary" });
+        const { fullName, username, email, password, confirmPassword, gender } = req.body;
+
+        if (!fullName || !username || !email || !password || !confirmPassword || !gender) {
+            return res.status(400).json({ error: 'All fields are necessary' });
         }
 
-        if (password !== confirmedPassword) {
-            return res.status(400).json({ error: "passwords do not match" });
+        if (password !== confirmPassword) {
+            return res.status(400).json({ error: "Passwords do not match" });
         }
 
-        const existingUser = await user.findOne({ email, userName });
+        const existingUser = await user.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
-            return res.status(401).json({ error: "user already exists" });
+            return res.status(401).json({ error: "User already exists" });
         }
 
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // https://avatar-placeholder.iran.liara.run/
-        const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${userName}`;
-        const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${userName}`;
+        const profilePic = gender === "male"
+            ? `https://avatar.iran.liara.run/public/boy?username=${username}`
+            : `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
         const newUser = new user({
             fullName,
-            userName,
+            username,
             email,
-            password: hashedPassword, gender,
-            profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
-        })
-
-        if (newUser) {
-
-            await newUser.save();
-
-            generateToken(newUser._id, res);
-
-            res.status(201).json({
-                _id: newUser._id,
-                fullName: newUser.fullName,
-                username: newUser.userName,
-                profilePic: newUser.profilePic,
-
-            });
-        } else {
-            res.status(400).json({ error: "Invalid user data" });
-        }
+            password: hashedPassword,
+            gender,
+            profilePic,
+        });
+        await newUser.save();
+        generateToken(newUser._id, res);
+        res.status(201).json({
+            _id: newUser._id,
+            fullName: newUser.fullName,
+            username: newUser.username,
+            profilePic: newUser.profilePic,
+        });
     } catch (error) {
         console.error(error.message);
-        return res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
 
 const login = async (req, res) => {
     try {

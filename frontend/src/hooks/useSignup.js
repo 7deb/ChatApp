@@ -2,33 +2,37 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const useSignup = () => {
-	const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-	const signup = async ({ fullName, username, password, confirmPassword, gender }) => {
-		const success = handleInputErrors({ fullName, username, password, confirmPassword, gender });
-		if (!success) return;
+    const signup = async ({ fullName, username, email, password, confirmPassword, gender }) => {
+        const success = handleInputErrors({ fullName, username, email, password, confirmPassword, gender });
+        if (!success) return;
 
-		setLoading(true);
-		try {
-			const res = await fetch("http://localhost:5000/api/auth/signup", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ fullName, username, password, confirmPassword, gender }),
-			});
+        setLoading(true);
+        try {
+            const res = await fetch("http://localhost:3000/api/auth/signup", { 
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ fullName, username, email, password, confirmPassword, gender }),
+            });
 
-			const data = await res.json();
-			if (data.error) {
-				throw new Error(data.error);
-			}
-		} catch (error) {
-			toast.error(error.message);
-		} finally {
-			setLoading(false);
-		}
-	};
+            const data = await res.json();
+            if (data.error) {
+                throw new Error(data.error || "Signup failed");
+            }
+            console.log(data.error);
+            // localStorage.setItem("chat-user", JSON.stringify(data));
+            // setAuthUser(data);
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-	return { loading, signup };
+    return { loading, signup };
 };
+
 export default useSignup;
 
 function handleInputErrors({ fullName, username, password, confirmPassword, gender }) {
