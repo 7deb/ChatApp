@@ -4,9 +4,9 @@ const generateToken = require('../utility/genToken');
 
 const signup = async (req, res) => {
     try {
-        const { fullName, username, email, password, confirmPassword, gender } = req.body;
+        const { username, email, password, confirmPassword, gender } = req.body;
 
-        if (!fullName || !username || !email || !password || !confirmPassword || !gender) {
+        if (!username || !email || !password || !confirmPassword || !gender) {
             return res.status(400).json({ error: 'All fields are necessary' });
         }
 
@@ -27,7 +27,6 @@ const signup = async (req, res) => {
             : `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
         const newUser = new user({
-            fullName,
             username,
             email,
             password: hashedPassword,
@@ -38,7 +37,6 @@ const signup = async (req, res) => {
         generateToken(newUser._id, res);
         res.status(201).json({
             _id: newUser._id,
-            fullName: newUser.fullName,
             username: newUser.username,
             profilePic: newUser.profilePic,
         });
@@ -50,12 +48,12 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { userName, password } = req.body;
-        if (!userName || !password) {
+        const { username, password } = req.body;
+        if (!username || !password) {
             return res.status(400).json({ error: "all fields are required!!" });
         }
 
-        const existingUser = await user.findOne({ userName });
+        const existingUser = await user.findOne({ username });
         if (!existingUser) {
             return res.status(400).json({ error: "user does not exist" });
         }
@@ -69,8 +67,7 @@ const login = async (req, res) => {
 
         res.status(200).json({  
             _id: existingUser._id,
-            fullName: existingUser.fullName,
-            username: existingUser.userName,
+            username: existingUser.username,
             profilePic: existingUser.profilePic,
         });
 
