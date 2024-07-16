@@ -5,7 +5,7 @@ const cors = require('cors');
 const databaseConnect = require('./database/db');
 const authRoutes = require('./routes/authRoutes');
 const messageRoutes = require('./routes/messageRoutes');
-const userRoutes = require('./routes/userRoutes')
+const userRoutes = require('./routes/userRoutes');
 
 require('dotenv').config();
 
@@ -24,8 +24,8 @@ app.use("/api/auth/", authRoutes);
 app.use("/api/messages/", messageRoutes);
 app.use("/api/users/", userRoutes);
 
-
 databaseConnect();
+
 app.listen(PORT, () => {
-    console.log(`server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

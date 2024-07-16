@@ -17,8 +17,10 @@ const signup = async (req, res) => {
         const existingUser = await user.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             return res.status(401).json({ error: "User already exists" });
+            return res.status(401).json({ error: "User already exists" });
         }
 
+        // Hash the password
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -26,6 +28,7 @@ const signup = async (req, res) => {
             ? `https://avatar.iran.liara.run/public/boy?username=${username}`
             : `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
+        // Create new user
         const newUser = new user({
             username,
             email,
@@ -42,6 +45,7 @@ const signup = async (req, res) => {
         });
     } catch (error) {
         console.error(error.message);
+        res.status(500).json({ error: "Internal Server Error" });
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
