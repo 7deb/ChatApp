@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    userName: { require: true, type: String },
-    email: { require: true, type: String },
-    password: { require: true, type: String },
-    gender: { require: true, type: String, enum: ["male", "female"] },
+    username: { required: true, type: String },
+    email: { required: true, type: String },
+    password: { required: true, type: String },
+    gender: { required: true, type: String, enum: ["male", "female"] },
     profilePic: { type: String, default: "" }
 },{timestamps:true});
 

@@ -56,7 +56,7 @@ const login = async (req, res) => {
             return res.status(400).json({ error: "all fields are required!!" });
         }
 
-        const existingUser = await user.findOne({ username });
+        const existingUser = await user.findOne({username});
         if (!existingUser) {
             return res.status(400).json({ error: "user does not exist" });
         }
