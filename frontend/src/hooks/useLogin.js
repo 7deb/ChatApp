@@ -22,8 +22,8 @@ const useLogin = () => {
 
             const data = await res.json();
             console.log(data);
-            // localStorage.setItem("chat-user", JSON.stringify(data));
-            // setAuthUser(data);
+            localStorage.setItem("chat-app", JSON.stringify(data));
+            setAuthUser(data);
         } catch (error) {
             toast.error(error.message);
         } finally {
