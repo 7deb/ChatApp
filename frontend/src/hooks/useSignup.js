@@ -4,7 +4,7 @@ import { useAuthContext } from "../context/AuthContext.jsx";
 
 const useSignup = () => {
     const [loading, setLoading] = useState(false);
-    const [setAuthUser]= useAuthContext();
+    const {setAuthUser}= useAuthContext();
 
     const signup = async ({ username, email, password, confirmPassword, gender }) => {
         const success = handleInputErrors({ username, email, password, confirmPassword, gender });
@@ -24,7 +24,6 @@ const useSignup = () => {
             }
     
             const data = await res.json();
-            console.log(data); 
             //localstorage
             localStorage.setItem("chat-app", JSON.stringify(data));
             //context
