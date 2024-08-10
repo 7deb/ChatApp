@@ -1,12 +1,16 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuthContext } from "../context/AuthContext";
 
 const useLogin = () => {
+    const { setAuthUser } = useAuthContext(); 
     const [loading, setLoading] = useState(false);
 
     const login = async (username, password) => {
+
         const success = handleInputErrors({ username, password });
         if (!success) return;
+
         setLoading(true);
         try {
             const res = await fetch("http://localhost:5000/api/auth/login", {
@@ -17,7 +21,7 @@ const useLogin = () => {
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.error || "Login failed");
+                throw new Error(errorData.error || "login failed");
             }
 
             const data = await res.json();
